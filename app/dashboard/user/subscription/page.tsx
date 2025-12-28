@@ -98,8 +98,8 @@ export default function PaymentPage() {
     setError("");
 
     try {
-      if (formData.amount < 5000) {
-        throw new Error("Minimum subscription amount is ₦5,000");
+      if (formData.amount < 2000) {
+        throw new Error("Minimum subscription amount is ₦2,000");
       }
 
       const subscriptionData: SubscriptionData = {
@@ -184,7 +184,7 @@ Please confirm my payment. Thank you!`;
                   className="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 px-4 py-2 text-gray-900"
                   required
                 />
-                <p className="mt-1 text-xs text-gray-500">Minimum: ₦5,000</p>
+                <p className="mt-1 text-xs text-gray-500">Minimum: ₦2,000</p>
               </div>
 
               <div>
