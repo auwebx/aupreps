@@ -3,9 +3,9 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Next.js PWA Example',
-    short_name: 'PWA Ex',
-    description: 'A Progressive Web App built with Next.js 15',
+    name: 'AUPreps',
+    short_name: 'AUPreps',
+    description: 'An Exam Application',
     start_url: '/',
     display: 'standalone',
     display_override: ['fullscreen', 'minimal-ui', 'standalone'], // Best UX 2025+

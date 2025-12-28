@@ -7,8 +7,8 @@ import { AuthProvider } from "@/components/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AUWebX Exam – WAEC, JAMB, NECO Past Questions",
-  description: "The #1 WAEC/JAMB Practice Platform in Nigeria",
+  title: "AUPreps – WAEC, JAMB, NECO Past Questions",
+  description: "The #1 WAEC/JAMB Practice Platform in Nigeria, Africa & Across the World",
   manifest: "/manifest.json",
 };
 
