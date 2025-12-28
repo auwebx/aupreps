@@ -175,7 +175,7 @@ Please confirm my payment. Thank you!`;
                 <input
                   type="number"
                   id="amount"
-                  min="5000"
+                  min="2000"
                   step="100"
                   value={formData.amount}
                   onChange={(e) =>
