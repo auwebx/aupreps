@@ -6,10 +6,10 @@ export async function POST(request: NextRequest) {
   try {
     const { amount } = await request.json();
 
-    if (!amount || amount < 200000) {
+    if (!amount || amount < 500000) {
       // 5000 Naira in kobo
       return NextResponse.json(
-        { error: "Invalid amount. Minimum is ₦2,000" },
+        { error: "Invalid amount. Minimum is ₦5,000" },
         { status: 400 }
       );
     }
