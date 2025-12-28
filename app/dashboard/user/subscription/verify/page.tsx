@@ -33,7 +33,7 @@ function VerifyPaymentContent() {
         }
 
         const API_URL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+          process.env.NEXT_PUBLIC_API_URL;
 
         // Verify payment with Paystack
         const verifyResponse = await fetch(

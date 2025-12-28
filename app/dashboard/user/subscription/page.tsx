@@ -38,7 +38,7 @@ interface ErrorResponse {
 export default function PaymentPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<PaymentFormData>({
-    amount: 5000,
+    amount: 2000,
     paymentMethod: "paystack",
   });
   const [loading, setLoading] = useState(false);
