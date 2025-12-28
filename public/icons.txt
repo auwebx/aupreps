@@ -1,0 +1,10 @@
+public/
+├── icon-144x144.png
+├── icon-180x180.png
+├── icon-192x192.png
+├── icon-256x256.png
+├── icon-384x384.png
+├── icon-512x512.png
+├── icon-maskable-192x192.png      ← safe zone inside (padding 10-20%)
+├── icon-maskable-512x512.png      ← same image, larger
+└── apple-touch-icon.png           ← usually 180x180
