@@ -92,8 +92,8 @@ export default function Home() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-green-800">
-            AUWebX Exam
+          <h1 className="text-3xl font-bold text-green-800" style={{textShadow: '1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white'}}>
+            AUPreps
           </h1>
         </div>
         <div className="space-x-4">
@@ -168,57 +168,60 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section className="container mx-auto px-6 py-24">
-        <h2 className="text-5xl font-bold text-center mb-16 text-green-900">Choose Your Plan</h2>
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <Card className="p-8 bg-white/90 backdrop-blur border-2 border-green-300 shadow-xl">
-            <h3 className="text-2xl font-bold mb-4 text-green-800">Free</h3>
-            <p className="text-4xl font-bold mb-6 text-green-700">₦0</p>
-            <ul className="space-y-3 mb-8 text-gray-700">
-              <li className="flex items-center"><CheckCircle className="mr-2 text-green-600" /> 50 questions/day</li>
-              <li className="flex items-center"><CheckCircle className="mr-2 text-green-600" /> Basic explanations</li>
-              <li className="flex items-center"><CheckCircle className="mr-2 text-green-600" /> Offline mode</li>
+   <section className="container mx-auto px-4 sm:px-6 py-16 sm:py-24">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-4 text-green-900">Choose Your Plan</h2>
+        <p className="text-center text-gray-600 mb-12 sm:mb-16 max-w-2xl mx-auto px-4">Start your journey with our free plan and upgrade when you are ready for unlimited AI-powered learning</p>
+        
+        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 max-w-4xl mx-auto">
+          {/* Free Plan */}
+          <Card className="p-6 sm:p-8 lg:p-10 bg-white/90 backdrop-blur border-2 border-green-300 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <div className="mb-4">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-green-800">Free Trial</h3>
+              <p className="text-sm sm:text-base text-gray-600">Limited time offer</p>
+            </div>
+            <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2 text-green-700">₦0</p>
+            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">For a limited time</p>
+            <ul className="space-y-3 sm:space-y-4 mb-8 sm:mb-10 text-gray-700">
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 text-green-600 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">Few questions from start</span></li>
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 text-green-600 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">AI-powered explanations</span></li>
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 text-green-600 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">Basic study features</span></li>
             </ul>
-            <Button className="w-full bg-gray-300 text-gray-600" variant="outline" disabled>
-              Current Plan
+            <Button className="w-full bg-green-600 text-white hover:bg-green-700 font-semibold shadow-lg text-base sm:text-lg py-5 sm:py-6">
+              Start Free Trial
             </Button>
           </Card>
 
-          <Card className="p-8 bg-gradient-to-br from-green-600 to-green-700 text-white transform scale-105 border-4 border-yellow-400 relative shadow-2xl">
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-green-900 text-sm px-4 py-1 rounded-full font-bold">
+          {/* Premium Pay As You Go - Most Popular */}
+          <Card className="p-6 sm:p-8 lg:p-10 bg-gradient-to-br from-green-600 to-green-700 text-white transform md:scale-105 border-4 border-yellow-400 relative shadow-2xl hover:shadow-3xl transition-all duration-300">
+            <div className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-green-900 text-xs sm:text-sm px-3 sm:px-4 py-1 rounded-full font-bold shadow-lg">
               MOST POPULAR
             </div>
-            <h3 className="text-3xl font-bold mb-4">Pro Monthly</h3>
-            <p className="text-5xl font-bold mb-6">₦2,900<span className="text-lg">/month</span></p>
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-center"><CheckCircle className="mr-2" /> Unlimited questions</li>
-              <li className="flex items-center"><CheckCircle className="mr-2" /> AI explanations</li>
-              <li className="flex items-center"><CheckCircle className="mr-2" /> Full timed tests</li>
-              <li className="flex items-center"><CheckCircle className="mr-2" /> Performance analytics</li>
-              <li className="flex items-center"><CheckCircle className="mr-2" /> Leaderboard</li>
+            <div className="mb-4 mt-2 sm:mt-0">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">Premium</h3>
+              <p className="text-sm sm:text-base text-green-100">Pay as you go</p>
+            </div>
+            <p className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-2">From ₦5,000</p>
+            <p className="text-sm sm:text-base text-green-100 mb-6 sm:mb-8">Minimum top-up • Use anytime</p>
+            <ul className="space-y-3 sm:space-y-4 mb-8 sm:mb-10">
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">Unlimited questions daily</span></li>
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">Advanced AI explanations</span></li>
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">Full timed practice tests</span></li>
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">AI study support 24/7</span></li>
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">Performance analytics</span></li>
+              <li className="flex items-start"><CheckCircle className="mr-2 sm:mr-3 mt-0.5 flex-shrink-0" size={20} /> <span className="text-sm sm:text-base">Leaderboard access</span></li>
             </ul>
             <Link href="/subscribe">
-              <Button className="w-full bg-white text-green-700 hover:bg-gray-100 font-bold shadow-lg">
-                Upgrade to Pro
+              <Button className="w-full bg-white text-green-700 hover:bg-gray-100 font-bold shadow-lg transition-colors text-base sm:text-lg py-5 sm:py-6">
+                Upgrade to Premium
               </Button>
             </Link>
           </Card>
+        </div>
 
-          <Card className="p-8 bg-white/90 backdrop-blur border-2 border-green-300 shadow-xl">
-            <h3 className="text-2xl font-bold mb-4 text-green-800">Pro Yearly</h3>
-            <p className="text-4xl font-bold mb-6 text-green-700">₦19,900<span className="text-lg opacity-70">/year</span></p>
-            <p className="mb-6 text-green-600 font-bold">Save 43% – ₦14,900 savings!</p>
-            <ul className="space-y-3 mb-8 text-gray-700">
-              <li className="flex items-center"><CheckCircle className="mr-2 text-green-600" /> Everything in Pro</li>
-              <li className="flex items-center"><CheckCircle className="mr-2 text-green-600" /> Priority support</li>
-              <li className="flex items-center"><CheckCircle className="mr-2 text-green-600" /> Early access to new features</li>
-            </ul>
-            <Link href="/subscribe?plan=yearly">
-              <Button className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg">
-                Go Yearly – Best Value
-              </Button>
-            </Link>
-          </Card>
+        {/* Trust Indicators */}
+        <div className="mt-12 sm:mt-16 text-center">
+          <p className="text-gray-600 mb-4">🔒 Secure payment • Cancel anytime • No hidden fees</p>
+          <p className="text-sm text-gray-500">All plans include AI-powered features to boost your JAMB success</p>
         </div>
       </section>
 
@@ -285,7 +288,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-6">Contact Us</h3>
               
               <div className="space-y-6">
-                <div className="flex items-start">
+               {/*  <div className="flex items-start">
                   <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -297,7 +300,7 @@ export default function Home() {
                     <p className="font-medium">123 Education Avenue, Garki District, Abuja, Nigeria</p>
                   </div>
                 </div>
-
+ */}
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,7 +310,7 @@ export default function Home() {
                   <div>
                     <p className="text-sm opacity-90 mb-1">Email</p>
                     <a href="mailto:support@auwebxexam.com" className="font-medium hover:underline">
-                      support@auwebxexam.com
+                      support@auwebx.com
                     </a>
                   </div>
                 </div>
@@ -334,8 +337,8 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-sm opacity-90 mb-1">WhatsApp</p>
-                    <a href="https://wa.me/2349013039060" target="_blank" rel="noopener noreferrer" className="font-medium hover:underline">
-                      +234 901 303 9060
+                    <a href="https://wa.me/2347043619930" target="_blank" rel="noopener noreferrer" className="font-medium hover:underline">
+                      +234 704 361 9930
                     </a>
                   </div>
                 </div>
@@ -379,7 +382,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold">AUWebX Exam</h3>
+                <h3 className="text-2xl font-bold">AUPreps</h3>
               </div>
               <p className="text-green-200 mb-4">
                 Nigerian leading online examination platform for JAMB, WAEC, and NECO preparation.
@@ -417,24 +420,24 @@ export default function Home() {
             <div>
               <h4 className="text-lg font-bold mb-4">Contact Us</h4>
               <div className="space-y-3 text-green-200">
-                <div className="flex items-start">
+               {/*  <div className="flex items-start">
                   <svg className="w-5 h-5 mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <span>123 Education Avenue, Garki District, Abuja, Nigeria</span>
-                </div>
+                </div> */}
                 <div className="flex items-center">
                   <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <a href="mailto:support@auwebxexam.com" className="hover:text-white">support@auwebxexam.com</a>
+                  <a href="mailto:support@auwebxexam.com" className="hover:text-white">support@auwebx.com</a>
                 </div>
                 <div className="flex items-center">
                   <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  <a href="tel:+2348012345678" className="hover:text-white">+234 801 234 5678</a>
+                  <a href="tel:+2348012345678" className="hover:text-white">+234 704 361 9930</a>
                 </div>
               </div>
 
@@ -469,7 +472,7 @@ export default function Home() {
 
           {/* Bottom Bar */}
           <div className="border-t border-green-700 mt-12 pt-8 text-center text-green-200">
-            <p>&copy; {new Date().getFullYear()} AUWebX Exam. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} AUPreps. All rights reserved.</p>
             <p className="mt-2 text-sm">Made with 💚 in Nigeria for Nigerian students</p>
           </div>
         </div>
