@@ -156,7 +156,7 @@ export default function PracticeTestApp() {
 
   // Track free questions used
   const [freeQuestionsUsed, setFreeQuestionsUsed] = useState<number>(0);
-  const FREE_QUESTIONS_LIMIT = 3;
+  const FREE_QUESTIONS_LIMIT = 2;
 
   useEffect(() => {
     if (token) {
@@ -623,8 +623,8 @@ export default function PracticeTestApp() {
   const showTestSetup = (subject: Subject): void => {
     setSelectedSubject(subject);
 
-    const maxQuestions = Math.min(subject.questionCount, 50);
-    const defaultQuestions = Math.min(10, maxQuestions);
+    const maxQuestions = Math.min(subject.questionCount, 100);
+    const defaultQuestions = Math.min(60, maxQuestions);
 
     setTestSetup({
       numberOfQuestions: defaultQuestions,

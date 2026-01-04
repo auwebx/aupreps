@@ -565,8 +565,10 @@ export default function AdminQuestions() {
             placeholder="Enter question text..."
             required
             rows={3}
-            className="w-full"
+            className="w-full p-2 border rounded"
           />
+
+
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">

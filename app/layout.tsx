@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner"; 
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/AuthProvider";
+import CopyProtection from "@/components/CopyProtection";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,9 +13,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
-// Add this instead
 export const viewport = {
-  themeColor: '#0f172a', // or whatever color you're using
+  themeColor: '#0f172a',
   width: 'device-width',
   initialScale: 1,
 };
@@ -25,8 +25,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={inter.className}>
+        <CopyProtection />
         <AuthProvider>
           {children}
           <Toaster />
