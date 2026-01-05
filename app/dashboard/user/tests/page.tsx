@@ -80,7 +80,14 @@ interface ExamApiResponse {
 interface SubjectApiResponse {
   id: string | number;
   name?: string;
-  exam?: string | { id: string | number; name: string; year: string | number; "@id"?: string };
+  exam?:
+    | string
+    | {
+        id: string | number;
+        name: string;
+        year: string | number;
+        "@id"?: string;
+      };
 }
 
 interface QuestionApiResponse {
@@ -144,11 +151,17 @@ export default function PracticeTestApp() {
     timeInMinutes: 60,
   });
 
-  const [aiSolutions, setAiSolutions] = useState<Record<number, AISolution>>({});
+  const [aiSolutions, setAiSolutions] = useState<Record<number, AISolution>>(
+    {}
+  );
   const [loadingAI, setLoadingAI] = useState<Record<number, boolean>>({});
   const [showSolution, setShowSolution] = useState<Record<number, boolean>>({});
-  const [checkingAnswer, setCheckingAnswer] = useState<Record<number, boolean>>({});
-  const [answerChecked, setAnswerChecked] = useState<Record<number, boolean>>({});
+  const [checkingAnswer, setCheckingAnswer] = useState<Record<number, boolean>>(
+    {}
+  );
+  const [answerChecked, setAnswerChecked] = useState<Record<number, boolean>>(
+    {}
+  );
 
   // Account balance state
   const [accountBalance, setAccountBalance] = useState<number>(0);
@@ -157,6 +170,23 @@ export default function PracticeTestApp() {
   // Track free questions used
   const [freeQuestionsUsed, setFreeQuestionsUsed] = useState<number>(0);
   const FREE_QUESTIONS_LIMIT = 2;
+
+  // Add these to your existing state declarations (around line 148-165)
+  const [generatedExamples, setGeneratedExamples] = useState<
+    Record<
+      number,
+      {
+        question: string;
+        answer: string;
+        explanation: string;
+        keyPoints: string[];
+      }
+    >
+  >({});
+
+  const [generatingExample, setGeneratingExample] = useState<
+    Record<number, boolean>
+  >({});
 
   useEffect(() => {
     if (token) {
@@ -178,7 +208,9 @@ export default function PracticeTestApp() {
   // Load free questions used from localStorage
   const loadFreeQuestionsUsed = (): void => {
     try {
-      const stored = localStorage.getItem(`freeQuestionsUsed_${user?.id ?? 'unknown'}`);
+      const stored = localStorage.getItem(
+        `freeQuestionsUsed_${user?.id ?? "unknown"}`
+      );
       if (stored) {
         setFreeQuestionsUsed(parseInt(stored, 10));
       }
@@ -190,7 +222,10 @@ export default function PracticeTestApp() {
   // Save free questions used to localStorage
   const saveFreeQuestionsUsed = (count: number): void => {
     try {
-      localStorage.setItem(`freeQuestionsUsed_${user?.id ?? 'unknown'}`, count.toString());
+      localStorage.setItem(
+        `freeQuestionsUsed_${user?.id ?? "unknown"}`,
+        count.toString()
+      );
       setFreeQuestionsUsed(count);
     } catch (error) {
       console.error("Error saving free questions count:", error);
@@ -226,7 +261,7 @@ export default function PracticeTestApp() {
         throw new Error("Failed to fetch account balance");
       }
 
-      const data = await res.json() as FinanceResponse;
+      const data = (await res.json()) as FinanceResponse;
       setAccountBalance(data.balance ?? 0);
     } catch (err) {
       console.error("fetchAccountBalance error:", err);
@@ -251,7 +286,9 @@ export default function PracticeTestApp() {
       incrementFreeQuestions();
       const remaining = FREE_QUESTIONS_LIMIT - freeQuestionsUsed - 1;
       toast.success(
-        `Free question used! ${remaining} free question${remaining !== 1 ? 's' : ''} remaining.`,
+        `Free question used! ${remaining} free question${
+          remaining !== 1 ? "s" : ""
+        } remaining.`,
         { duration: 3000 }
       );
       return true;
@@ -288,25 +325,33 @@ export default function PracticeTestApp() {
       );
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({})) as DeductBalanceResponse;
+        const errorData = (await res
+          .json()
+          .catch(() => ({}))) as DeductBalanceResponse;
         throw new Error(errorData.message ?? "Failed to deduct balance");
       }
 
-      const data = await res.json() as DeductBalanceResponse;
+      const data = (await res.json()) as DeductBalanceResponse;
       setAccountBalance(data.balance ?? accountBalance - amount);
       toast.success(
-        `₦${amount} deducted. New balance: ₦${data.balance ?? accountBalance - amount}`
+        `₦${amount} deducted. New balance: ₦${
+          data.balance ?? accountBalance - amount
+        }`
       );
       return true;
     } catch (err) {
       console.error("deductBalance error:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to process payment";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to process payment";
       toast.error(errorMessage);
       return false;
     }
   };
 
-  const fetchAISolution = async (question: Question, questionIndex: number): Promise<void> => {
+  const fetchAISolution = async (
+    question: Question,
+    questionIndex: number
+  ): Promise<void> => {
     if (!question) return;
 
     setLoadingAI((prev) => ({ ...prev, [questionIndex]: true }));
@@ -339,7 +384,7 @@ export default function PracticeTestApp() {
         );
       }
 
-      const data = await response.json() as AIApiResponse;
+      const data = (await response.json()) as AIApiResponse;
 
       if (data.error) {
         throw new Error(data.error);
@@ -361,10 +406,16 @@ export default function PracticeTestApp() {
           stepByStep: parsed.stepByStep ?? [],
         };
 
-        console.log("Successfully parsed AI solution for question:", questionIndex);
+        console.log(
+          "Successfully parsed AI solution for question:",
+          questionIndex
+        );
         setAiSolutions((prev) => ({ ...prev, [questionIndex]: aiSolution }));
       } catch {
-        console.warn("AI response was not valid JSON, using raw content:", content.substring(0, 200));
+        console.warn(
+          "AI response was not valid JSON, using raw content:",
+          content.substring(0, 200)
+        );
         const aiSolution: AISolution = {
           explanation: content,
           correctAnswer: "",
@@ -378,7 +429,8 @@ export default function PracticeTestApp() {
       setShowSolution((prev) => ({ ...prev, [questionIndex]: true }));
     } catch (error) {
       console.error("Error fetching AI solution:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
 
       const fallbackSolution: AISolution = {
         explanation: `Unable to fetch AI explanation: ${errorMessage}. Please check that the API route /api/ai-solution exists and your DeepSeek API key is configured.`,
@@ -393,7 +445,9 @@ export default function PracticeTestApp() {
       }));
       setShowSolution((prev) => ({ ...prev, [questionIndex]: true }));
 
-      toast.error("AI explanation temporarily unavailable. Showing basic feedback.");
+      toast.error(
+        "AI explanation temporarily unavailable. Showing basic feedback."
+      );
     } finally {
       setLoadingAI((prev) => ({ ...prev, [questionIndex]: false }));
     }
@@ -474,6 +528,184 @@ export default function PracticeTestApp() {
     }, 500);
   };
 
+  const generateAnotherExample = async (
+    questionIndex: number
+  ): Promise<void> => {
+    const question = questions[questionIndex];
+
+    // Set loading state
+    setGeneratingExample((prev) => ({ ...prev, [questionIndex]: true }));
+
+    try {
+      // First deduct balance (or use free question)
+      const success = await deductBalance(
+        20,
+        `Generate another example for Question ${questionIndex + 1}`
+      );
+
+      if (!success) {
+        setGeneratingExample((prev) => ({ ...prev, [questionIndex]: false }));
+        return;
+      }
+
+      // Prepare prompt for AI
+      // Update the AI prompt in the generateAnotherExample function for better structured responses
+      const prompt = `Generate another example question on the same topic as this question to help students learn better:
+
+ORIGINAL QUESTION CONTEXT:
+Question: ${question.questionText}
+Topic: ${question.topic?.name || "General"}
+Subject: ${selectedSubject?.name || "Unknown"}
+Exam: ${selectedExam?.name || "Unknown"}
+
+INSTRUCTIONS FOR NEW EXAMPLE:
+1. Create a NEW multiple-choice question on the SAME TOPIC but different scenario
+2. Make it CLEAR and EDUCATIONAL (not trick questions)
+3. Provide a CLEAR CORRECT ANSWER
+4. Explain WHY it's correct in simple terms
+5. List 3-4 KEY LEARNING POINTS students should remember
+
+FORMAT YOUR RESPONSE AS JSON with these EXACT keys:
+{
+  "question": "The new question text here...",
+  "answer": "The correct answer option text (not just A/B/C/D)",
+  "explanation": "Simple, clear explanation why this answer is correct. Break down the reasoning.",
+  "keyPoints": [
+    "First key concept to remember",
+    "Second important point",
+    "Third learning objective"
+  ]
+}
+
+IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
+
+      // Call AI API to generate example
+      const response = await fetch("/api/ai-solution", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          questionText: prompt,
+          options: [], // No options needed for this request
+          generateExample: true, // Flag to indicate this is for generating example
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate example");
+      }
+
+      const data = (await response.json()) as AIApiResponse;
+      const content = data.choices?.[0]?.message?.content;
+
+      if (!content) {
+        throw new Error("No content received from AI");
+      }
+
+      try {
+        // Parse the AI response
+        const parsed = JSON.parse(content) as {
+          question?: string;
+          answer?: string;
+          explanation?: string;
+          keyPoints?: string[];
+        };
+
+        // Ensure we have required fields, provide defaults if missing
+        const generatedExample = {
+          question:
+            parsed.question ||
+            `Another example on ${
+              question.topic?.name || "this topic"
+            }: Apply the same concept to a different situation.`,
+          answer:
+            parsed.answer ||
+            "The correct approach involves applying the core principles.",
+          explanation:
+            parsed.explanation ||
+            "This demonstrates how the same concept applies in different contexts.",
+          keyPoints: parsed.keyPoints?.filter(Boolean) || [
+            "Master the core concept first",
+            "Practice with variations",
+            "Understand the 'why' behind answers",
+          ],
+        };
+
+        // Update state with generated example
+        setGeneratedExamples((prev) => ({
+          ...prev,
+          [questionIndex]: generatedExample,
+        }));
+
+        toast.success("Practice example generated! Study the breakdown below.");
+      } catch {
+        // If JSON parsing fails, create a more structured fallback
+        const generatedExample = {
+          question: `Practice applying ${
+            question.topic?.name || "this concept"
+          }: ${content.substring(0, 150)}...`,
+          answer:
+            "Study the explanation below to understand the correct approach.",
+          explanation: content,
+          keyPoints: [
+            "Break down complex problems into steps",
+            "Look for patterns in similar questions",
+            "Always verify your understanding",
+          ],
+        };
+
+        setGeneratedExamples((prev) => ({
+          ...prev,
+          [questionIndex]: generatedExample,
+        }));
+      }
+    } catch (error) {
+      console.error("Error generating example:", error);
+      toast.error("Failed to generate example. Please try again.");
+
+      // Create a simple fallback example using current question data
+      const fallbackExample = {
+        question: `Another example: How would you apply the same concept from the previous question in a different scenario?`,
+        answer:
+          "The correct approach would be similar, focusing on the core principles of the topic.",
+        explanation:
+          "This topic requires understanding of fundamental principles. Practice with different scenarios to master the concept.",
+        keyPoints: [
+          "Understand the core concept",
+          "Apply to different scenarios",
+          "Practice regularly",
+        ],
+      };
+
+      setGeneratedExamples((prev) => ({
+        ...prev,
+        [questionIndex]: fallbackExample,
+      }));
+    } finally {
+      setGeneratingExample((prev) => ({ ...prev, [questionIndex]: false }));
+    }
+  };
+
+  // Helper function to regenerate example
+  const handleGenerateAnotherExample = async (
+    questionIndex: number
+  ): Promise<void> => {
+    await generateAnotherExample(questionIndex);
+  };
+
+  const regenerateExample = async (questionIndex: number): Promise<void> => {
+    // Clear existing example first
+    setGeneratedExamples((prev) => {
+      const newState = { ...prev };
+      delete newState[questionIndex];
+      return newState;
+    });
+
+    // Generate new example
+    await generateAnotherExample(questionIndex);
+  };
+
   const fetchExams = async (): Promise<void> => {
     if (!token) {
       setLoading(false);
@@ -488,7 +720,9 @@ export default function PracticeTestApp() {
 
       if (!res.ok) throw new Error("Failed to load exams");
 
-      const data = await res.json() as ExamApiResponse[] | HydraResponse<ExamApiResponse>;
+      const data = (await res.json()) as
+        | ExamApiResponse[]
+        | HydraResponse<ExamApiResponse>;
       const list: ExamApiResponse[] = Array.isArray(data)
         ? data
         : data?.["hydra:member"] ?? data?.member ?? [];
@@ -526,7 +760,9 @@ export default function PracticeTestApp() {
 
       if (!subjectsRes.ok) throw new Error("Failed to load subjects");
 
-      const subjectsData = await subjectsRes.json() as SubjectApiResponse[] | HydraResponse<SubjectApiResponse>;
+      const subjectsData = (await subjectsRes.json()) as
+        | SubjectApiResponse[]
+        | HydraResponse<SubjectApiResponse>;
       const allSubjects: SubjectApiResponse[] = Array.isArray(subjectsData)
         ? subjectsData
         : subjectsData?.["hydra:member"] ?? subjectsData?.member ?? [];
@@ -546,7 +782,7 @@ export default function PracticeTestApp() {
                   { headers: { Accept: "application/ld+json" } }
                 );
                 if (examRes.ok) {
-                  const examData = await examRes.json() as ExamApiResponse;
+                  const examData = (await examRes.json()) as ExamApiResponse;
                   subjectExam = {
                     id: Number(examData.id),
                     name: examData.name,
@@ -569,7 +805,9 @@ export default function PracticeTestApp() {
             return null;
           }
 
-          console.log(`Subject ${subject.name ?? 'Unknown'} belongs to exam ${exam.name}`);
+          console.log(
+            `Subject ${subject.name ?? "Unknown"} belongs to exam ${exam.name}`
+          );
 
           const questionsRes = await api.authenticatedFetch(
             `${API_URL}/api/questions?exam.id=${exam.id}&subject.id=${subject.id}`,
@@ -579,8 +817,12 @@ export default function PracticeTestApp() {
 
           let questionCount = 0;
           if (questionsRes.ok) {
-            const questionsData = await questionsRes.json() as QuestionApiResponse[] | HydraResponse<QuestionApiResponse>;
-            const questionsList: QuestionApiResponse[] = Array.isArray(questionsData)
+            const questionsData = (await questionsRes.json()) as
+              | QuestionApiResponse[]
+              | HydraResponse<QuestionApiResponse>;
+            const questionsList: QuestionApiResponse[] = Array.isArray(
+              questionsData
+            )
               ? questionsData
               : questionsData?.["hydra:member"] ?? questionsData?.member ?? [];
             questionCount = questionsList.length;
@@ -671,7 +913,9 @@ export default function PracticeTestApp() {
         throw new Error("Failed to load questions");
       }
 
-      const questionsData = await questionsRes.json() as QuestionApiResponse[] | HydraResponse<QuestionApiResponse>;
+      const questionsData = (await questionsRes.json()) as
+        | QuestionApiResponse[]
+        | HydraResponse<QuestionApiResponse>;
       const allQuestions: QuestionApiResponse[] = Array.isArray(questionsData)
         ? questionsData
         : questionsData?.["hydra:member"] ?? questionsData?.member ?? [];
@@ -699,10 +943,14 @@ export default function PracticeTestApp() {
         if (q.subject) {
           if (typeof q.subject === "string") {
             const subjectIdMatch = q.subject.match(/\/(\d+)$/);
-            questionSubjectId = subjectIdMatch ? parseInt(subjectIdMatch[1]) : null;
+            questionSubjectId = subjectIdMatch
+              ? parseInt(subjectIdMatch[1])
+              : null;
           } else if (q.subject["@id"]) {
             const subjectIdMatch = q.subject["@id"].match(/\/(\d+)$/);
-            questionSubjectId = subjectIdMatch ? parseInt(subjectIdMatch[1]) : null;
+            questionSubjectId = subjectIdMatch
+              ? parseInt(subjectIdMatch[1])
+              : null;
           } else if (q.subject.id) {
             questionSubjectId = parseInt(String(q.subject.id));
           }
@@ -836,11 +1084,16 @@ export default function PracticeTestApp() {
       );
 
       if (!createRes.ok) {
-        const err = await createRes.json().catch(() => ({})) as { "hydra:description"?: string };
+        const err = (await createRes.json().catch(() => ({}))) as {
+          "hydra:description"?: string;
+        };
         throw new Error(err?.["hydra:description"] ?? "Failed to start test");
       }
 
-      const createdTest = await createRes.json() as { id?: string | number; "@id"?: string };
+      const createdTest = (await createRes.json()) as {
+        id?: string | number;
+        "@id"?: string;
+      };
 
       setPracticeTest({
         id: Number(createdTest.id ?? createdTest["@id"]?.split("/").pop() ?? 0),
@@ -864,7 +1117,8 @@ export default function PracticeTestApp() {
       toast.success(`Practice test started for ${selectedSubject.name}!`);
     } catch (err) {
       console.error("startTest error:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to start test";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to start test";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -885,7 +1139,7 @@ export default function PracticeTestApp() {
     // Deduct ₦25 for submitting test (or use free question)
     const success = await deductBalance(
       25,
-      `Submit Test: ${selectedSubject?.name ?? 'Unknown'}`
+      `Submit Test: ${selectedSubject?.name ?? "Unknown"}`
     );
     if (!success) {
       return;
@@ -951,7 +1205,9 @@ export default function PracticeTestApp() {
               errorMessage = errorData.message;
             }
           } catch {
-            errorMessage = `Server error (${updateRes.status}): ${errorText.substring(0, 100)}`;
+            errorMessage = `Server error (${
+              updateRes.status
+            }): ${errorText.substring(0, 100)}`;
           }
         } catch (e) {
           console.warn("Could not parse error response:", e);
@@ -1031,7 +1287,9 @@ export default function PracticeTestApp() {
       ) {
         toast.error("Network error. Check your connection and try again.");
       } else {
-        toast.error(errorMessage || "Could not save results (showing local results)");
+        toast.error(
+          errorMessage || "Could not save results (showing local results)"
+        );
       }
 
       console.log("Showing local results despite save error");
@@ -1363,7 +1621,9 @@ export default function PracticeTestApp() {
                   Back to Exams
                 </button>
                 <button
-                  onClick={() => selectedExam && void fetchSubjects(selectedExam)}
+                  onClick={() =>
+                    selectedExam && void fetchSubjects(selectedExam)
+                  }
                   className="bg-white text-green-700 px-8 py-3 rounded-lg font-semibold hover:bg-green-50 transition-all border border-gray-300 shadow-md"
                 >
                   Refresh Subjects
@@ -1463,6 +1723,7 @@ export default function PracticeTestApp() {
     const currentCheckingAnswer = checkingAnswer[currentQuestion] || false;
     const currentAnswerChecked = answerChecked[currentQuestion] || false;
 
+
     return (
       <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
@@ -1507,7 +1768,8 @@ export default function PracticeTestApp() {
                   {/* NEW: Show free questions remaining */}
                   {freeQuestionsUsed < FREE_QUESTIONS_LIMIT && (
                     <div className="text-xs text-blue-600 font-semibold mt-2">
-                      🎁 {FREE_QUESTIONS_LIMIT - freeQuestionsUsed} free questions left
+                      🎁 {FREE_QUESTIONS_LIMIT - freeQuestionsUsed} free
+                      questions left
                     </div>
                   )}
                 </div>
@@ -1556,6 +1818,314 @@ export default function PracticeTestApp() {
                 </button>
               ))}
             </div>
+
+            {/* Generated Example Section - Add this before the AI Solution section */}
+            {generatedExamples[currentQuestion] && (
+              <div className="mt-8 pt-6 border-t border-gray-200 border-dashed">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-linear-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      Another Example (Same Topic)
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => regenerateExample(currentQuestion)}
+                    disabled={generatingExample[currentQuestion]}
+                    className="text-sm bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1 rounded-lg font-medium transition-colors flex items-center gap-1"
+                  >
+                    {generatingExample[currentQuestion] ? (
+                      <>
+                        <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                        Regenerating...
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                          />
+                        </svg>
+                        Generate New
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Example Question Section */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white font-bold">Q</span>
+                      </div>
+                      <h5 className="font-semibold text-amber-800">
+                        Try This Example Question:
+                      </h5>
+                    </div>
+                    <p className="text-gray-700 pl-2 ml-8">
+                      {generatedExamples[currentQuestion].question}
+                    </p>
+                  </div>
+
+                  {/* Answer Section - Broken Down for Better Learning */}
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white font-bold">A</span>
+                      </div>
+                      <h5 className="font-semibold text-green-800">
+                        Answer & Explanation:
+                      </h5>
+                    </div>
+
+                    {/* 1. The Correct Answer (Clear and Prominent) */}
+                    <div className="mb-4 pl-2 ml-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <h6 className="font-semibold text-green-700">
+                          Correct Answer:
+                        </h6>
+                      </div>
+                      <p className="text-gray-700 font-medium ml-7">
+                        {generatedExamples[currentQuestion].answer}
+                      </p>
+                    </div>
+
+                    {/* 2. Why This is Correct (Explanation) */}
+                    {generatedExamples[currentQuestion].explanation && (
+                      <div className="mb-4 pl-2 ml-8">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <span className="text-xs text-white font-bold">
+                              ?
+                            </span>
+                          </div>
+                          <h6 className="font-semibold text-blue-700">
+                            Why This is Correct:
+                          </h6>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 border border-blue-100 ml-7">
+                          <p className="text-gray-700">
+                            {generatedExamples[currentQuestion].explanation}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 3. How to Approach This Type of Question */}
+                    <div className="pl-2 ml-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 10V3L4 14h7v7l9-11h-7z"
+                            />
+                          </svg>
+                        </div>
+                        <h6 className="font-semibold text-purple-700">
+                          Problem-Solving Approach:
+                        </h6>
+                      </div>
+                      <ul className="space-y-2 ml-7">
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Read the question carefully and identify key terms
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Apply the core concept learned from the topic
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Eliminate obviously wrong options first
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Double-check your reasoning before finalizing
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Key Learning Points Section - Enhanced with Icons */}
+                  {generatedExamples[currentQuestion].keyPoints &&
+                    generatedExamples[currentQuestion].keyPoints.length > 0 && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg
+                              className="w-4 h-4 text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </div>
+                          <h5 className="font-semibold text-blue-800">
+                            Key Learning Points:
+                          </h5>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2 ml-8">
+                          {generatedExamples[currentQuestion].keyPoints.map(
+                            (point, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2 p-3 bg-white rounded-lg border border-blue-100"
+                              >
+                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xs font-bold text-blue-600">
+                                    {idx + 1}
+                                  </span>
+                                </div>
+                                <div>
+                                  <h6 className="font-medium text-blue-700 mb-1">
+                                    Point {idx + 1}
+                                  </h6>
+                                  <p className="text-gray-700 text-sm">
+                                    {point}
+                                  </p>
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Quick Self-Check Section */}
+                 {/*  <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
+                        <svg
+                          className="w-4 h-4 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+                      </div>
+                      <h5 className="font-semibold text-purple-800">
+                        Quick Self-Check:
+                      </h5>
+                    </div>
+
+                    <div className="space-y-3 pl-2 ml-8">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id="understood-concept"
+                          className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                        />
+                        <label
+                          htmlFor="understood-concept"
+                          className="text-gray-700"
+                        >
+                          I understand the core concept demonstrated here
+                        </label>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id="can-apply"
+                          className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                        />
+                        <label htmlFor="can-apply" className="text-gray-700">
+                          I can apply this concept to similar questions
+                        </label>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id="need-practice"
+                          className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                        />
+                        <label
+                          htmlFor="need-practice"
+                          className="text-gray-700"
+                        >
+                          I need more practice with this type of question
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-purple-100 text-center">
+                      <p className="text-sm text-purple-600 font-medium">
+                        Check the boxes above to track your learning progress!
+                      </p>
+                    </div>
+                  </div> */}
+                </div>
+              </div>
+            )}
+
             {currentShowSolution && (
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <div className="flex items-center gap-2 mb-4">
@@ -1670,7 +2240,9 @@ export default function PracticeTestApp() {
                 answerChecked[currentQuestion]
               }
               className="flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
-              title={freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦15"}
+              title={
+                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦15"
+              }
             >
               {currentCheckingAnswer ? (
                 <>
@@ -1709,7 +2281,10 @@ export default function PracticeTestApp() {
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  Check My Answer {freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "(Free)" : "(₦15)"}
+                  Check My Answer{" "}
+                  {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
+                    ? "(Free)"
+                    : "(₦15)"}
                 </>
               )}
             </button>
@@ -1718,7 +2293,9 @@ export default function PracticeTestApp() {
               onClick={() => toggleSolution(currentQuestion)}
               disabled={currentLoadingAI}
               className="flex-1 sm:flex-none bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
-              title={freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦20"}
+              title={
+                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦20"
+              }
             >
               {currentLoadingAI ? (
                 <>
@@ -1763,7 +2340,68 @@ export default function PracticeTestApp() {
                       d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                     />
                   </svg>
-                  Show AI Solution {freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "(Free)" : "(₦20)"}
+                  Show AI Solution{" "}
+                  {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
+                    ? "(Free)"
+                    : "(₦20)"}
+                </>
+              )}
+            </button>
+
+            {/* ADD THIS NEW BUTTON: */}
+            {/* Change the button text in the action buttons section */}
+            <button
+              onClick={() => generateAnotherExample(currentQuestion)}
+              disabled={generatingExample[currentQuestion]}
+              className="flex-1 sm:flex-none bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
+              title={
+                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦20"
+              }
+            >
+              {generatingExample[currentQuestion] ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Generating...
+                </>
+              ) : generatedExamples[currentQuestion] ? (
+                <>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                  Get New Example{" "}
+                  {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
+                    ? "(Free)"
+                    : "(₦20)"}
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                  Get Practice Example{" "}
+                  {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
+                    ? "(Free)"
+                    : "(₦20)"}
                 </>
               )}
             </button>
@@ -1801,9 +2439,19 @@ export default function PracticeTestApp() {
                 onClick={handleSubmitTest}
                 disabled={loading}
                 className="w-full lg:w-auto bg-green-600 hover:bg-green-700 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:scale-105 transition-transform disabled:opacity-50 shadow-md"
-                title={freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦25"}
+                title={
+                  freeQuestionsUsed < FREE_QUESTIONS_LIMIT
+                    ? "Free"
+                    : "Cost: ₦25"
+                }
               >
-                {loading ? "Submitting..." : `Submit Test ${freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "(Free)" : "(₦25)"}`}
+                {loading
+                  ? "Submitting..."
+                  : `Submit Test ${
+                      freeQuestionsUsed < FREE_QUESTIONS_LIMIT
+                        ? "(Free)"
+                        : "(₦25)"
+                    }`}
               </button>
             ) : (
               <button
@@ -1822,6 +2470,7 @@ export default function PracticeTestApp() {
       </div>
     );
   }
+
   if (view === "results" && results) {
     return (
       <div className="min-h-screen bg-gray-100 px-4 py-8 sm:px-6 md:px-10 flex items-center justify-center">
