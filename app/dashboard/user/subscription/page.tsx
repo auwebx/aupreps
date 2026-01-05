@@ -916,7 +916,7 @@ Please confirm my payment. Thank you!`;
                         Processing...
                       </span>
                     ) : formData.paymentMethod === "bank_transfer" ? (
-                      "Submit & Get Bank Details"
+                      "Submit"
                     ) : (
                       "Continue to Payment"
                     )}
