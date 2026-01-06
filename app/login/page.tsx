@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { api } from "@/lib/api";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -19,6 +20,17 @@ export default function Login() {
   const [showResendVerification, setShowResendVerification] = useState(false);
   const [resendEmail, setResendEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const searchParams = useSearchParams();
+  const verified = searchParams.get("verified");
+
+  useEffect(() => {
+    if (verified) {
+      toast.success(
+        "Your email has been successfully verified. You can now log in."
+      );
+    }
+  }, [verified]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,9 +86,15 @@ export default function Login() {
           </div>
           <h1 className="text-3xl font-bold text-green-800">Welcome Back</h1>
           <p className="text-sm text-gray-600 mt-1">
-            Secure Online Examination Platform
+             Online Examination Platform
           </p>
         </div>
+
+        {verified && (
+          <div className="mb-4 p-4 bg-green-50 border-2 border-green-400 rounded-lg text-green-800 text-sm font-medium">
+            Your email has been successfully verified. You can now log in.
+          </div>
+        )}
 
         {showResendVerification && (
           <div className="mb-4 p-4 bg-yellow-50 border-2 border-yellow-400 rounded-lg">
