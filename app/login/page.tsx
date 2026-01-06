@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -21,16 +20,26 @@ export default function Login() {
   const [resendEmail, setResendEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const searchParams = useSearchParams();
-  const verified = searchParams.get("verified");
+  const [verified, setVerified] = useState(false);
 
   useEffect(() => {
-    if (verified) {
-      toast.success(
-        "Your email has been successfully verified. You can now log in."
-      );
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const isVerified = params.get("verified");
+
+      if (isVerified) {
+        setVerified(true); // store in state so JSX can read it
+        toast.success(
+          "Your email has been successfully verified. You can now log in."
+        );
+
+        // Optional: remove query param so it doesn't show again on refresh
+        const url = new URL(window.location.href);
+        url.searchParams.delete("verified");
+        window.history.replaceState({}, "", url);
+      }
     }
-  }, [verified]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,7 +95,7 @@ export default function Login() {
           </div>
           <h1 className="text-3xl font-bold text-green-800">Welcome Back</h1>
           <p className="text-sm text-gray-600 mt-1">
-             Online Examination Platform
+            Online Examination Platform
           </p>
         </div>
 
@@ -148,7 +157,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 rounded-lg transition-all shadow-lg"
+            className="w-full bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 rounded-lg transition-all shadow-lg"
           >
             {loading ? "Signing in..." : "Sign In"}
           </Button>
