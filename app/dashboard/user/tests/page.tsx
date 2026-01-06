@@ -133,72 +133,80 @@ const getSubjectFromQuestion = (
 // Safe LaTeX to HTML converter
 const latexToHtml = (text: string): string => {
   if (!text) return text;
-  
-  return text
-    // Convert inline math \( \) with proper escaping
-    .replace(/\\\((.+?)\\\)/g, (match, content) => {
-      return `<span class="math-inline">${convertLatexContent(content)}</span>`;
-    })
-    // Convert display math \[ \]
-    .replace(/\\\[(.+?)\\\]/g, (match, content) => {
-      return `<div class="math-display">${convertLatexContent(content)}</div>`;
-    })
-    // Clean up any remaining LaTeX commands
-    .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1')
-    .replace(/\\[a-zA-Z]+/g, '');
+
+  return (
+    text
+      // Convert inline math \( \) with proper escaping
+      .replace(/\\\((.+?)\\\)/g, (match, content) => {
+        return `<span class="math-inline">${convertLatexContent(
+          content
+        )}</span>`;
+      })
+      // Convert display math \[ \]
+      .replace(/\\\[(.+?)\\\]/g, (match, content) => {
+        return `<div class="math-display">${convertLatexContent(
+          content
+        )}</div>`;
+      })
+      // Clean up any remaining LaTeX commands
+      .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, "$1")
+      .replace(/\\[a-zA-Z]+/g, "")
+  );
 };
 
 const convertLatexContent = (content: string): string => {
-  return content
-    // Handle square roots
-    .replace(/\\sqrt\{([^}]+)\}/g, '√($1)')
-    .replace(/\\sqrt\[(\d+)\]\{([^}]+)\}/g, '$1√($2)')
-    // Handle fractions
-    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)')
-    // Convert Greek letters to readable names
-    .replace(/\\alpha/g, 'alpha')
-    .replace(/\\beta/g, 'beta')
-    .replace(/\\gamma/g, 'gamma')
-    .replace(/\\pi/g, 'pi')
-    .replace(/\\theta/g, 'theta')
-    .replace(/\\sigma/g, 'sigma')
-    // Handle superscripts
-    .replace(/\^\{([^}]+)\}/g, '^($1)')
-    .replace(/\^(\w)/g, '^$1')
-    // Handle subscripts
-    .replace(/_\{([^}]+)\}/g, '_($1)')
-    .replace(/_(\w)/g, '_$1')
-    // Escape HTML
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  return (
+    content
+      // Handle square roots
+      .replace(/\\sqrt\{([^}]+)\}/g, "√($1)")
+      .replace(/\\sqrt\[(\d+)\]\{([^}]+)\}/g, "$1√($2)")
+      // Handle fractions
+      .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "($1)/($2)")
+      // Convert Greek letters to readable names
+      .replace(/\\alpha/g, "alpha")
+      .replace(/\\beta/g, "beta")
+      .replace(/\\gamma/g, "gamma")
+      .replace(/\\pi/g, "pi")
+      .replace(/\\theta/g, "theta")
+      .replace(/\\sigma/g, "sigma")
+      // Handle superscripts
+      .replace(/\^\{([^}]+)\}/g, "^($1)")
+      .replace(/\^(\w)/g, "^$1")
+      // Handle subscripts
+      .replace(/_\{([^}]+)\}/g, "_($1)")
+      .replace(/_(\w)/g, "_$1")
+      // Escape HTML
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+  );
 };
 
 // Create a new render function specifically for generated examples
 const renderExampleContent = (content: string): React.ReactNode => {
   if (!content) return null;
-  
+
   // Check if it's math content
   const isMath = containsLatex(content) || isMathContent(content);
-  
+
   if (isMath) {
     // For math content, convert to readable text without HTML
     const readable = content
       .replace(/\\\((.+?)\\\)/g, (match, inner) => convertLatexContent(inner))
       .replace(/\\\[(.+?)\\\]/g, (match, inner) => convertLatexContent(inner))
-      .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1')
-      .replace(/\\[a-zA-Z]+/g, '');
-    
+      .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, "$1")
+      .replace(/\\[a-zA-Z]+/g, "");
+
     return <span>{readable}</span>;
   }
-  
+
   // For non-math content, just clean up LaTeX markers
   const cleaned = content
-    .replace(/\\\((.+?)\\\)/g, '$1')
-    .replace(/\\\[(.+?)\\\]/g, '$1')
-    .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1')
-    .replace(/\\[a-zA-Z]+/g, '');
-  
+    .replace(/\\\((.+?)\\\)/g, "$1")
+    .replace(/\\\[(.+?)\\\]/g, "$1")
+    .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, "$1")
+    .replace(/\\[a-zA-Z]+/g, "");
+
   return <span>{cleaned}</span>;
 };
 
@@ -911,11 +919,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
   };
 
   // Helper function to regenerate example
-  const handleGenerateAnotherExample = async (
-    questionIndex: number
-  ): Promise<void> => {
-    await generateAnotherExample(questionIndex);
-  };
+
 
   const regenerateExample = async (questionIndex: number): Promise<void> => {
     // Clear existing example first
@@ -2042,240 +2046,246 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
             </div>
 
             {/* Generated Example Section - Add this before the AI Solution section */}
-              {generatedExamples[currentQuestion] && (
-  <div className="mt-8 pt-6 border-t border-gray-200 border-dashed">
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
-          <svg
-            className="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-        </div>
-        <h4 className="text-lg font-semibold text-gray-800">
-          Another Example (Same Topic)
-        </h4>
-      </div>
-      <button
-        onClick={() => regenerateExample(currentQuestion)}
-        disabled={generatingExample[currentQuestion]}
-        className="text-sm bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1 rounded-lg font-medium transition-colors flex items-center gap-1"
-      >
-        {generatingExample[currentQuestion] ? (
-          <>
-            <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-            Regenerating...
-          </>
-        ) : (
-          <>
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            Generate New
-          </>
-        )}
-      </button>
-    </div>
-
-    <div className="space-y-4">
-      {/* Example Question Section */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
-            <span className="text-xs text-white font-bold">Q</span>
-          </div>
-          <h5 className="font-semibold text-amber-800">
-            Try This Example Question:
-          </h5>
-        </div>
-        <div className="text-gray-700 pl-2 ml-8">
-          {renderExampleContent(generatedExamples[currentQuestion].question)}
-        </div>
-      </div>
-
-      {/* Answer Section - Broken Down for Better Learning */}
-      <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-            <span className="text-xs text-white font-bold">A</span>
-          </div>
-          <h5 className="font-semibold text-green-800">
-            Answer & Explanation:
-          </h5>
-        </div>
-
-        {/* 1. The Correct Answer (Clear and Prominent) */}
-        <div className="mb-4 pl-2 ml-8">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-3 h-3 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <h6 className="font-semibold text-green-700">
-              Correct Answer:
-            </h6>
-          </div>
-          <div className="text-gray-700 font-medium ml-7">
-            {renderExampleContent(generatedExamples[currentQuestion].answer)}
-          </div>
-        </div>
-
-        {/* 2. Why This is Correct (Explanation) */}
-        {generatedExamples[currentQuestion].explanation && (
-          <div className="mb-4 pl-2 ml-8">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-xs text-white font-bold">?</span>
-              </div>
-              <h6 className="font-semibold text-blue-700">
-                Why This is Correct:
-              </h6>
-            </div>
-            <div className="bg-white rounded-lg p-3 border border-blue-100 ml-7">
-              <div className="text-gray-700">
-                {renderExampleContent(generatedExamples[currentQuestion].explanation)}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 3. How to Approach This Type of Question */}
-        <div className="pl-2 ml-8">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-3 h-3 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            </div>
-            <h6 className="font-semibold text-purple-700">
-              Problem-Solving Approach:
-            </h6>
-          </div>
-          <ul className="space-y-2 ml-7">
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Read the question carefully and identify key terms
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Apply the core concept learned from the topic
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Eliminate obviously wrong options first
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Double-check your reasoning before finalizing
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Key Learning Points Section - Enhanced with Icons */}
-      {generatedExamples[currentQuestion].keyPoints &&
-        generatedExamples[currentQuestion].keyPoints.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h5 className="font-semibold text-blue-800">
-                Key Learning Points:
-              </h5>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2 ml-8">
-              {generatedExamples[currentQuestion].keyPoints.map(
-                (point, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start gap-2 p-3 bg-white rounded-lg border border-blue-100"
-                  >
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-bold text-blue-600">
-                        {idx + 1}
-                      </span>
+            {generatedExamples[currentQuestion] && (
+              <div className="mt-8 pt-6 border-t border-gray-200 border-dashed">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-linear-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
                     </div>
-                    <div>
-                      <h6 className="font-medium text-blue-700 mb-1">
-                        Point {idx + 1}
-                      </h6>
-                      <div className="text-gray-700 text-sm">
-                        {renderExampleContent(point)}
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      Another Example (Same Topic)
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => regenerateExample(currentQuestion)}
+                    disabled={generatingExample[currentQuestion]}
+                    className="text-sm bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1 rounded-lg font-medium transition-colors flex items-center gap-1"
+                  >
+                    {generatingExample[currentQuestion] ? (
+                      <>
+                        <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                        Regenerating...
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                          />
+                        </svg>
+                        Generate New
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Example Question Section */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white font-bold">Q</span>
                       </div>
+                      <h5 className="font-semibold text-amber-800">
+                        Try This Example Question:
+                      </h5>
+                    </div>
+                    <div className="text-gray-700 pl-2 ml-8">
+                      {renderExampleContent(
+                        generatedExamples[currentQuestion].question
+                      )}
                     </div>
                   </div>
-                )
-              )}
-            </div>
-          </div>
-        )}
-    </div>
-  </div>
-)}
 
+                  {/* Answer Section - Broken Down for Better Learning */}
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white font-bold">A</span>
+                      </div>
+                      <h5 className="font-semibold text-green-800">
+                        Answer & Explanation:
+                      </h5>
+                    </div>
 
+                    {/* 1. The Correct Answer (Clear and Prominent) */}
+                    <div className="mb-4 pl-2 ml-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <h6 className="font-semibold text-green-700">
+                          Correct Answer:
+                        </h6>
+                      </div>
+                      <div className="text-gray-700 font-medium ml-7">
+                        {renderExampleContent(
+                          generatedExamples[currentQuestion].answer
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 2. Why This is Correct (Explanation) */}
+                    {generatedExamples[currentQuestion].explanation && (
+                      <div className="mb-4 pl-2 ml-8">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <span className="text-xs text-white font-bold">
+                              ?
+                            </span>
+                          </div>
+                          <h6 className="font-semibold text-blue-700">
+                            Why This is Correct:
+                          </h6>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 border border-blue-100 ml-7">
+                          <div className="text-gray-700">
+                            {renderExampleContent(
+                              generatedExamples[currentQuestion].explanation
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 3. How to Approach This Type of Question */}
+                    <div className="pl-2 ml-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 10V3L4 14h7v7l9-11h-7z"
+                            />
+                          </svg>
+                        </div>
+                        <h6 className="font-semibold text-purple-700">
+                          Problem-Solving Approach:
+                        </h6>
+                      </div>
+                      <ul className="space-y-2 ml-7">
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Read the question carefully and identify key terms
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Apply the core concept learned from the topic
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Eliminate obviously wrong options first
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Double-check your reasoning before finalizing
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Key Learning Points Section - Enhanced with Icons */}
+                  {generatedExamples[currentQuestion].keyPoints &&
+                    generatedExamples[currentQuestion].keyPoints.length > 0 && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg
+                              className="w-4 h-4 text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </div>
+                          <h5 className="font-semibold text-blue-800">
+                            Key Learning Points:
+                          </h5>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2 ml-8">
+                          {generatedExamples[currentQuestion].keyPoints.map(
+                            (point, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2 p-3 bg-white rounded-lg border border-blue-100"
+                              >
+                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                                  <span className="text-xs font-bold text-blue-600">
+                                    {idx + 1}
+                                  </span>
+                                </div>
+                                <div>
+                                  <h6 className="font-medium text-blue-700 mb-1">
+                                    Point {idx + 1}
+                                  </h6>
+                                  <div className="text-gray-700 text-sm">
+                                    {renderExampleContent(point)}
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+                </div>
+              </div>
+            )}
 
             {currentShowSolution && (
               <div className="mt-8 pt-6 border-t border-gray-200">
@@ -2403,7 +2413,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
               }
               className="flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
               title={
-                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦15"
+                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : ""
               }
             >
               {currentCheckingAnswer ? (
@@ -2446,7 +2456,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                   Check My Answer{" "}
                   {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
                     ? "(Free)"
-                    : "(₦15)"}
+                    : ""}
                 </>
               )}
             </button>
@@ -2456,7 +2466,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
               disabled={currentLoadingAI}
               className="flex-1 sm:flex-none bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
               title={
-                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦20"
+                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : ""
               }
             >
               {currentLoadingAI ? (
@@ -2505,7 +2515,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                   Show AI Solution{" "}
                   {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
                     ? "(Free)"
-                    : "(₦20)"}
+                    : ""}
                 </>
               )}
             </button>
@@ -2543,7 +2553,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                   Get New Example{" "}
                   {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
                     ? "(Free)"
-                    : "(₦20)"}
+                    : ""}
                 </>
               ) : (
                 <>
@@ -2563,7 +2573,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                   Get Practice Example{" "}
                   {freeQuestionsUsed < FREE_QUESTIONS_LIMIT
                     ? "(Free)"
-                    : "(₦20)"}
+                    : ""}
                 </>
               )}
             </button>
@@ -2604,7 +2614,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                 title={
                   freeQuestionsUsed < FREE_QUESTIONS_LIMIT
                     ? "Free"
-                    : "Cost: ₦25"
+                    : ""
                 }
               >
                 {loading
@@ -2612,7 +2622,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                   : `Submit Test ${
                       freeQuestionsUsed < FREE_QUESTIONS_LIMIT
                         ? "(Free)"
-                        : "(₦25)"
+                        : ""
                     }`}
               </button>
             ) : (
@@ -2692,7 +2702,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center">
             <button
               onClick={() => selectedSubject && showTestSetup(selectedSubject)}
-              className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-green-700 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:scale-105 transition-transform shadow-lg"
+              className="w-full sm:w-auto bg-linear-to-r from-green-600 to-green-700 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:scale-105 transition-transform shadow-lg"
             >
               Retry Test
             </button>
