@@ -163,7 +163,7 @@ export default function DashboardLayout({
           <Link href={`/dashboard/${userRole}/subscription`}>
             <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition">
               <UserCircle size={20} className="text-green-500" />
-              <span>Subscribe</span>
+              <span>Top Up</span>
             </button>
           </Link>
 
