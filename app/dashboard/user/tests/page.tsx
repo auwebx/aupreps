@@ -564,10 +564,13 @@ export default function PracticeTestApp() {
 
       const data = (await res.json()) as DeductBalanceResponse;
       setAccountBalance(data.balance ?? accountBalance - amount);
-      toast.success(
+      /* toast.success(
         `₦${amount} deducted. New balance: ₦${
           data.balance ?? accountBalance - amount
         }`
+      ); */
+      toast.success(
+        "Success"
       );
       return true;
     } catch (err) {
@@ -695,7 +698,7 @@ export default function PracticeTestApp() {
     if (!aiSolutions[questionIndex]) {
       // Deduct ₦20 for AI solution (or use free question)
       const success = await deductBalance(
-        20,
+        18.3,
         `AI Solution for Question ${questionIndex + 1}`
       );
       if (!success) {
@@ -727,7 +730,7 @@ export default function PracticeTestApp() {
 
     // Deduct ₦15 for checking answer (or use free question)
     const success = await deductBalance(
-      15,
+      13.6,
       `Check Answer for Question ${questionIndex + 1}`
     );
     if (!success) {
@@ -770,7 +773,7 @@ export default function PracticeTestApp() {
     try {
       // First deduct balance (or use free question)
       const success = await deductBalance(
-        20,
+        19.1,
         `Generate another example for Question ${questionIndex + 1}`
       );
 
