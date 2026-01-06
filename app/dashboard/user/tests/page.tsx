@@ -730,7 +730,7 @@ export default function PracticeTestApp() {
 
     // Deduct ₦15 for checking answer (or use free question)
     const success = await deductBalance(
-      13.6,
+      0,
       `Check Answer for Question ${questionIndex + 1}`
     );
     if (!success) {
