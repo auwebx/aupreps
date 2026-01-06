@@ -5,229 +5,6 @@ import { useAuth } from "@/components/AuthProvider";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 
-import "katex/dist/katex.min.css";
-
-// Helper function to check if content contains LaTeX
-const containsLatex = (text: string): boolean => {
-  if (!text) return false;
-  const latexPatterns = [
-    /\\\(.*?\\\)/, // inline math
-    /\\\[.*?\\\]/, // display math
-    /\\sqrt\{/, // square root
-    /\\frac\{/, // fractions
-    /\\int/, // integrals
-    /\\sum/, // summation
-    /\\prod/, // product
-    /\\lim/, // limits
-    /\\to/, // arrow
-    /\^\{/, // superscript
-    /_\{/, // subscript
-    /\\[a-zA-Z]+\{/, // any LaTeX command
-  ];
-  return latexPatterns.some((pattern) => pattern.test(text));
-};
-
-// Check if content looks like math/science content
-const isMathContent = (text: string): boolean => {
-  if (!text) return false;
-
-  const mathKeywords = [
-    "sqrt",
-    "root",
-    "equation",
-    "formula",
-    "calculate",
-    "solve",
-    "derivative",
-    "integral",
-    "function",
-    "variable",
-    "algebra",
-    "geometry",
-    "trigonometry",
-    "calculus",
-    "proof",
-    "theorem",
-    "π",
-    "theta",
-    "sigma",
-    "delta",
-    "epsilon",
-    "angle",
-    "triangle",
-    "circle",
-    "square",
-    "cube",
-    "volume",
-    "area",
-    "perimeter",
-    "radius",
-    "diameter",
-    "cos",
-    "sin",
-    "tan",
-    "log",
-    "ln",
-    "exp",
-    "exponential",
-    "polynomial",
-    "quadratic",
-    "linear",
-    "graph",
-    "coordinate",
-    "axis",
-    "vector",
-    "matrix",
-  ];
-
-  const lowerText = text.toLowerCase();
-  return mathKeywords.some((keyword) => lowerText.includes(keyword));
-};
-
-// Get subject from question text
-const getSubjectFromQuestion = (
-  questionText: string,
-  selectedSubjectName?: string
-): string => {
-  if (!questionText) return selectedSubjectName?.toLowerCase() || "unknown";
-
-  const lowerQuestion = questionText.toLowerCase();
-
-  if (selectedSubjectName) {
-    const lowerSubject = selectedSubjectName.toLowerCase();
-    if (
-      lowerSubject.includes("math") ||
-      lowerSubject.includes("physics") ||
-      lowerSubject.includes("chemistry") ||
-      lowerSubject.includes("engineering") ||
-      lowerSubject.includes("science")
-    ) {
-      return "math";
-    }
-    if (
-      lowerSubject.includes("english") ||
-      lowerSubject.includes("literature") ||
-      lowerSubject.includes("language")
-    ) {
-      return "english";
-    }
-    if (
-      lowerSubject.includes("economics") ||
-      lowerSubject.includes("business")
-    ) {
-      return "economics";
-    }
-    if (lowerSubject.includes("history") || lowerSubject.includes("social")) {
-      return "history";
-    }
-  }
-
-  // Fallback to content detection
-  if (containsLatex(lowerQuestion) || isMathContent(lowerQuestion)) {
-    return "math";
-  }
-
-  return selectedSubjectName?.toLowerCase() || "unknown";
-};
-
-// Safe LaTeX to HTML converter
-const latexToHtml = (text: string): string => {
-  if (!text) return text;
-  
-  return text
-    // Convert inline math \( \) with proper escaping
-    .replace(/\\\((.+?)\\\)/g, (match, content) => {
-      return `<span class="math-inline">${convertLatexContent(content)}</span>`;
-    })
-    // Convert display math \[ \]
-    .replace(/\\\[(.+?)\\\]/g, (match, content) => {
-      return `<div class="math-display">${convertLatexContent(content)}</div>`;
-    })
-    // Clean up any remaining LaTeX commands
-    .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1')
-    .replace(/\\[a-zA-Z]+/g, '');
-};
-
-const convertLatexContent = (content: string): string => {
-  return content
-    // Handle square roots
-    .replace(/\\sqrt\{([^}]+)\}/g, '√($1)')
-    .replace(/\\sqrt\[(\d+)\]\{([^}]+)\}/g, '$1√($2)')
-    // Handle fractions
-    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)')
-    // Convert Greek letters to readable names
-    .replace(/\\alpha/g, 'alpha')
-    .replace(/\\beta/g, 'beta')
-    .replace(/\\gamma/g, 'gamma')
-    .replace(/\\pi/g, 'pi')
-    .replace(/\\theta/g, 'theta')
-    .replace(/\\sigma/g, 'sigma')
-    // Handle superscripts
-    .replace(/\^\{([^}]+)\}/g, '^($1)')
-    .replace(/\^(\w)/g, '^$1')
-    // Handle subscripts
-    .replace(/_\{([^}]+)\}/g, '_($1)')
-    .replace(/_(\w)/g, '_$1')
-    // Escape HTML
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-};
-
-// Create a new render function specifically for generated examples
-const renderExampleContent = (content: string): React.ReactNode => {
-  if (!content) return null;
-  
-  // Check if it's math content
-  const isMath = containsLatex(content) || isMathContent(content);
-  
-  if (isMath) {
-    // For math content, convert to readable text without HTML
-    const readable = content
-      .replace(/\\\((.+?)\\\)/g, (match, inner) => convertLatexContent(inner))
-      .replace(/\\\[(.+?)\\\]/g, (match, inner) => convertLatexContent(inner))
-      .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1')
-      .replace(/\\[a-zA-Z]+/g, '');
-    
-    return <span>{readable}</span>;
-  }
-  
-  // For non-math content, just clean up LaTeX markers
-  const cleaned = content
-    .replace(/\\\((.+?)\\\)/g, '$1')
-    .replace(/\\\[(.+?)\\\]/g, '$1')
-    .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1')
-    .replace(/\\[a-zA-Z]+/g, '');
-  
-  return <span>{cleaned}</span>;
-};
-
-// Main render function
-const renderContent = (
-  content: string,
-  subjectHint?: string
-): React.ReactNode => {
-  if (!content) return null;
-
-  const subject = getSubjectFromQuestion(content, subjectHint);
-  const isMath =
-    subject === "math" || containsLatex(content) || isMathContent(content);
-
-  if (isMath) {
-    const html = latexToHtml(content);
-    return <span dangerouslySetInnerHTML={{ __html: html }} />;
-  }
-
-  // For non-math content, just clean up LaTeX markers
-  const cleaned = content
-    .replace(/\\\((.+?)\\\)/g, "$1")
-    .replace(/\\\[(.+?)\\\]/g, "$1")
-    .replace(/\\[a-zA-Z]+\{([^}]+)\}/g, "$1")
-    .replace(/\\[a-zA-Z]+/g, "");
-
-  return <span>{cleaned}</span>;
-};
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 // TYPES
@@ -1946,6 +1723,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
     const currentCheckingAnswer = checkingAnswer[currentQuestion] || false;
     const currentAnswerChecked = answerChecked[currentQuestion] || false;
 
+
     return (
       <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
@@ -2042,240 +1820,241 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
             </div>
 
             {/* Generated Example Section - Add this before the AI Solution section */}
-              {generatedExamples[currentQuestion] && (
-  <div className="mt-8 pt-6 border-t border-gray-200 border-dashed">
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
-          <svg
-            className="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-        </div>
-        <h4 className="text-lg font-semibold text-gray-800">
-          Another Example (Same Topic)
-        </h4>
-      </div>
-      <button
-        onClick={() => regenerateExample(currentQuestion)}
-        disabled={generatingExample[currentQuestion]}
-        className="text-sm bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1 rounded-lg font-medium transition-colors flex items-center gap-1"
-      >
-        {generatingExample[currentQuestion] ? (
-          <>
-            <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-            Regenerating...
-          </>
-        ) : (
-          <>
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            Generate New
-          </>
-        )}
-      </button>
-    </div>
-
-    <div className="space-y-4">
-      {/* Example Question Section */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
-            <span className="text-xs text-white font-bold">Q</span>
-          </div>
-          <h5 className="font-semibold text-amber-800">
-            Try This Example Question:
-          </h5>
-        </div>
-        <div className="text-gray-700 pl-2 ml-8">
-          {renderExampleContent(generatedExamples[currentQuestion].question)}
-        </div>
-      </div>
-
-      {/* Answer Section - Broken Down for Better Learning */}
-      <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-            <span className="text-xs text-white font-bold">A</span>
-          </div>
-          <h5 className="font-semibold text-green-800">
-            Answer & Explanation:
-          </h5>
-        </div>
-
-        {/* 1. The Correct Answer (Clear and Prominent) */}
-        <div className="mb-4 pl-2 ml-8">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-3 h-3 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <h6 className="font-semibold text-green-700">
-              Correct Answer:
-            </h6>
-          </div>
-          <div className="text-gray-700 font-medium ml-7">
-            {renderExampleContent(generatedExamples[currentQuestion].answer)}
-          </div>
-        </div>
-
-        {/* 2. Why This is Correct (Explanation) */}
-        {generatedExamples[currentQuestion].explanation && (
-          <div className="mb-4 pl-2 ml-8">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-xs text-white font-bold">?</span>
-              </div>
-              <h6 className="font-semibold text-blue-700">
-                Why This is Correct:
-              </h6>
-            </div>
-            <div className="bg-white rounded-lg p-3 border border-blue-100 ml-7">
-              <div className="text-gray-700">
-                {renderExampleContent(generatedExamples[currentQuestion].explanation)}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 3. How to Approach This Type of Question */}
-        <div className="pl-2 ml-8">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-3 h-3 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            </div>
-            <h6 className="font-semibold text-purple-700">
-              Problem-Solving Approach:
-            </h6>
-          </div>
-          <ul className="space-y-2 ml-7">
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Read the question carefully and identify key terms
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Apply the core concept learned from the topic
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Eliminate obviously wrong options first
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 mt-1">✓</span>
-              <span className="text-gray-700">
-                Double-check your reasoning before finalizing
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Key Learning Points Section - Enhanced with Icons */}
-      {generatedExamples[currentQuestion].keyPoints &&
-        generatedExamples[currentQuestion].keyPoints.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h5 className="font-semibold text-blue-800">
-                Key Learning Points:
-              </h5>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2 ml-8">
-              {generatedExamples[currentQuestion].keyPoints.map(
-                (point, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start gap-2 p-3 bg-white rounded-lg border border-blue-100"
-                  >
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-bold text-blue-600">
-                        {idx + 1}
-                      </span>
+            {generatedExamples[currentQuestion] && (
+              <div className="mt-8 pt-6 border-t border-gray-200 border-dashed">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-linear-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                        />
+                      </svg>
                     </div>
-                    <div>
-                      <h6 className="font-medium text-blue-700 mb-1">
-                        Point {idx + 1}
-                      </h6>
-                      <div className="text-gray-700 text-sm">
-                        {renderExampleContent(point)}
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      Another Example (Same Topic)
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => regenerateExample(currentQuestion)}
+                    disabled={generatingExample[currentQuestion]}
+                    className="text-sm bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1 rounded-lg font-medium transition-colors flex items-center gap-1"
+                  >
+                    {generatingExample[currentQuestion] ? (
+                      <>
+                        <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                        Regenerating...
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                          />
+                        </svg>
+                        Generate New
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Example Question Section */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white font-bold">Q</span>
                       </div>
+                      <h5 className="font-semibold text-amber-800">
+                        Try This Example Question:
+                      </h5>
+                    </div>
+                    <p className="text-gray-700 pl-2 ml-8">
+                      {generatedExamples[currentQuestion].question}
+                    </p>
+                  </div>
+
+                  {/* Answer Section - Broken Down for Better Learning */}
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white font-bold">A</span>
+                      </div>
+                      <h5 className="font-semibold text-green-800">
+                        Answer & Explanation:
+                      </h5>
+                    </div>
+
+                    {/* 1. The Correct Answer (Clear and Prominent) */}
+                    <div className="mb-4 pl-2 ml-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </div>
+                        <h6 className="font-semibold text-green-700">
+                          Correct Answer:
+                        </h6>
+                      </div>
+                      <p className="text-gray-700 font-medium ml-7">
+                        {generatedExamples[currentQuestion].answer}
+                      </p>
+                    </div>
+
+                    {/* 2. Why This is Correct (Explanation) */}
+                    {generatedExamples[currentQuestion].explanation && (
+                      <div className="mb-4 pl-2 ml-8">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <span className="text-xs text-white font-bold">
+                              ?
+                            </span>
+                          </div>
+                          <h6 className="font-semibold text-blue-700">
+                            Why This is Correct:
+                          </h6>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 border border-blue-100 ml-7">
+                          <p className="text-gray-700">
+                            {generatedExamples[currentQuestion].explanation}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 3. How to Approach This Type of Question */}
+                    <div className="pl-2 ml-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 10V3L4 14h7v7l9-11h-7z"
+                            />
+                          </svg>
+                        </div>
+                        <h6 className="font-semibold text-purple-700">
+                          Problem-Solving Approach:
+                        </h6>
+                      </div>
+                      <ul className="space-y-2 ml-7">
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Read the question carefully and identify key terms
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Apply the core concept learned from the topic
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Eliminate obviously wrong options first
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span className="text-gray-700">
+                            Double-check your reasoning before finalizing
+                          </span>
+                        </li>
+                      </ul>
                     </div>
                   </div>
-                )
-              )}
-            </div>
-          </div>
-        )}
-    </div>
-  </div>
-)}
 
+                  {/* Key Learning Points Section - Enhanced with Icons */}
+                  {generatedExamples[currentQuestion].keyPoints &&
+                    generatedExamples[currentQuestion].keyPoints.length > 0 && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg
+                              className="w-4 h-4 text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </div>
+                          <h5 className="font-semibold text-blue-800">
+                            Key Learning Points:
+                          </h5>
+                        </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2 ml-8">
+                          {generatedExamples[currentQuestion].keyPoints.map(
+                            (point, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2 p-3 bg-white rounded-lg border border-blue-100"
+                              >
+                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xs font-bold text-blue-600">
+                                    {idx + 1}
+                                  </span>
+                                </div>
+                                <div>
+                                  <h6 className="font-medium text-blue-700 mb-1">
+                                    Point {idx + 1}
+                                  </h6>
+                                  <p className="text-gray-700 text-sm">
+                                    {point}
+                                  </p>
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                </div>
+              </div>
+            )}
 
             {currentShowSolution && (
               <div className="mt-8 pt-6 border-t border-gray-200">
@@ -2313,12 +2092,9 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                       <h5 className="font-semibold text-blue-800 mb-2">
                         Explanation:
                       </h5>
-                      <div className="text-gray-700 whitespace-pre-line">
-                        {renderContent(
-                          currentAiSolution.explanation,
-                          selectedSubject?.name
-                        )}
-                      </div>
+                      <p className="text-gray-700 whitespace-pre-line">
+                        {currentAiSolution.explanation}
+                      </p>
                     </div>
 
                     {currentAiSolution.reasoning && (
@@ -2326,12 +2102,9 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                         <h5 className="font-semibold text-green-800 mb-2">
                           Step-by-step reasoning:
                         </h5>
-                        <div className="text-gray-700 whitespace-pre-line">
-                          {renderContent(
-                            currentAiSolution.reasoning,
-                            selectedSubject?.name
-                          )}
-                        </div>
+                        <p className="text-gray-700 whitespace-pre-line">
+                          {currentAiSolution.reasoning}
+                        </p>
                       </div>
                     )}
 
@@ -2347,9 +2120,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                                 <span className="bg-purple-100 text-purple-800 rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold mr-2 mt-0.5">
                                   {idx + 1}
                                 </span>
-                                <div className="text-gray-700">
-                                  {renderContent(step, selectedSubject?.name)}
-                                </div>
+                                <span className="text-gray-700">{step}</span>
                               </li>
                             ))}
                           </ul>
@@ -2361,12 +2132,9 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                         <h5 className="font-semibold text-yellow-800 mb-2">
                           Correct Answer:
                         </h5>
-                        <div className="text-lg font-bold text-green-700">
-                          {renderContent(
-                            currentAiSolution.correctAnswer,
-                            selectedSubject?.name
-                          )}
-                        </div>
+                        <p className="text-lg font-bold text-green-700">
+                          {currentAiSolution.correctAnswer}
+                        </p>
                         {currentAnswerChecked && answers[currentQuestion] && (
                           <div
                             className={`mt-3 p-3 rounded-lg ${
