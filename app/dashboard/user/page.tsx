@@ -90,17 +90,17 @@ export default function UserDashboard() {
       </div>
 
       {/* ================= STATS ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+     {/*  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard icon={<BookOpen size={32} />} value="12" label="Active Courses" color="text-green-500" />
         <StatCard icon={<Award size={32} />} value="8" label="Achievements" color="text-green-500" />
         <StatCard icon={<Calendar size={32} />} value="45" label="Days Active" color="text-green-500" />
         <StatCard icon={<Star size={32} />} value="4.8" label="Average Rating" color="text-green-500" />
-      </div>
+      </div> */}
 
       {/* ================= MAIN CONTENT ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Progress */}
-        <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+        {/* <div className="bg-white/5 rounded-xl p-6 border border-white/10">
           <h3 className="text-xl font-bold text-white mb-4">My Progress</h3>
 
           {[
@@ -123,10 +123,10 @@ export default function UserDashboard() {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Upcoming Events */}
-        <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+        {/* <div className="bg-white/5 rounded-xl p-6 border border-white/10">
           <h3 className="text-xl font-bold text-white mb-4">Upcoming Events</h3>
 
           {[
@@ -139,11 +139,11 @@ export default function UserDashboard() {
               <p className="text-gray-400 text-sm">{event.time}</p>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* ================= PAYMENT HISTORY ================= */}
-      <div className="bg-white/5 rounded-xl p-6 border border-white/10 mt-8">
+      {/* <div className="bg-white/5 rounded-xl p-6 border border-white/10 mt-8">
         <h3 className="text-xl font-bold text-white mb-4">
           Payment History
         </h3>
@@ -188,7 +188,7 @@ export default function UserDashboard() {
             </table>
           </div>
         )}
-      </div>
+      </div> */}
     </DashboardLayout>
   );
 }

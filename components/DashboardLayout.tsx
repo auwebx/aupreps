@@ -153,12 +153,12 @@ export default function DashboardLayout({
             </button>
           </Link>
 
-          <Link href={`/dashboard/${userRole}/ocr`}>
+        {/*   <Link href={`/dashboard/${userRole}/ocr`}>
             <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition">
               <UserCircle size={20} className="text-green-500" />
               <span>OCR</span>
             </button>
-          </Link>
+          </Link> */}
 
           <Link href={`/dashboard/${userRole}/subscription`}>
             <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition">
@@ -167,19 +167,19 @@ export default function DashboardLayout({
             </button>
           </Link>
 
-          <Link href={`/dashboard/${userRole}/profile`}>
+         {/*  <Link href={`/dashboard/${userRole}/profile`}>
             <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition">
               <UserCircle size={20} className="text-green-500" />
               <span>Profile</span>
             </button>
-          </Link>
+          </Link> */}
 
-          <Link href={`/dashboard/${userRole}/settings`}>
+          {/* <Link href={`/dashboard/${userRole}/settings`}>
             <button className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition">
               <Settings size={20} className="text-green-500" />
               <span>Settings</span>
             </button>
-          </Link>
+          </Link> */}
         </nav>
 
         <div className="absolute bottom-6 left-6 right-6">
