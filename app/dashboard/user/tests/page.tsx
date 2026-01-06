@@ -236,7 +236,7 @@ const renderContent = (
   return <span>{cleaned}</span>;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // TYPES
 interface Exam {
@@ -400,7 +400,7 @@ export default function PracticeTestApp() {
 
   // Track free questions used
   const [freeQuestionsUsed, setFreeQuestionsUsed] = useState<number>(0);
-  const FREE_QUESTIONS_LIMIT = 2;
+  const FREE_QUESTIONS_LIMIT = 3;
 
   // Add these to your existing state declarations (around line 148-165)
   const [generatedExamples, setGeneratedExamples] = useState<
@@ -2290,7 +2290,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
             {currentShowSolution && (
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-linear-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                     <svg
                       className="w-5 h-5 text-white"
                       fill="none"
@@ -2411,7 +2411,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                 currentCheckingAnswer ||
                 answerChecked[currentQuestion]
               }
-              className="flex-1 sm:flex-none bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
               title={
                 freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : ""
               }
@@ -2464,7 +2464,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
             <button
               onClick={() => toggleSolution(currentQuestion)}
               disabled={currentLoadingAI}
-              className="flex-1 sm:flex-none bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none bg-linear-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
               title={
                 freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : ""
               }
@@ -2527,7 +2527,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
               disabled={generatingExample[currentQuestion]}
               className="flex-1 sm:flex-none bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2"
               title={
-                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : "Cost: ₦20"
+                freeQuestionsUsed < FREE_QUESTIONS_LIMIT ? "Free" : ""
               }
             >
               {generatingExample[currentQuestion] ? (
