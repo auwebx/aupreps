@@ -96,13 +96,13 @@ export default function Register() {
       <div className="w-full max-w-md bg-white/95 backdrop-blur-sm rounded-2xl p-8 border-4 border-green-600 shadow-2xl">
         <div className="text-center mb-8">
           <div className="w-20 h-20 mx-auto mb-4 bg-white rounded-full flex items-center justify-center overflow-hidden relative">
-  <Image 
-    src="/logo.png" 
-    alt="AUPreps Logo" 
-    fill
-    className="object-cover"
-  />
-</div>
+            <Image
+              src="/logo.png"
+              alt="AUPreps Logo"
+              fill
+              className="object-cover"
+            />
+          </div>
           <h1 className="text-3xl font-bold text-green-800">Create Account</h1>
           <p className="text-sm text-gray-600 mt-1">
             Join our examination platform
