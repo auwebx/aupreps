@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     description: 'The #1 WAEC/JAMB Practice Platform in Nigeria, Africa & Across the World. Access thousands of past questions and ace your exams.',
     images: [
       {
-        url: '/logo.png', // Add a 1200x630px image
+        url: '/og-image.jpg', // Add a 1200x630px image
         width: 1200,
         height: 630,
         alt: 'AUPreps - Exam Preparation Platform',
@@ -75,8 +75,6 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'], // Same as OG image
     creator: '@aupreps', // Replace with your Twitter handle
   },
-  
-  manifest: "/manifest.json",
   
   alternates: {
     canonical: 'https://aupreps.com',
