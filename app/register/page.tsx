@@ -105,7 +105,7 @@ export default function Register() {
           </div>
           <h1 className="text-3xl font-bold text-green-800">Create Account</h1>
           <p className="text-sm text-gray-600 mt-1">
-            Join our examination platform
+            Join AUPreps examination platform
           </p>
         </div>
 

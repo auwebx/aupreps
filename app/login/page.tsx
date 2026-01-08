@@ -93,7 +93,7 @@ export default function Login() {
               className="object-cover"
             />
           </div>
-          <h1 className="text-3xl font-bold text-green-800">Welcome Back</h1>
+          <h1 className="text-3xl font-bold text-green-800">Sign in to AUPreps</h1>
           <p className="text-sm text-gray-600 mt-1">
             Online Examination Platform
           </p>
