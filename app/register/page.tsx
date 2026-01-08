@@ -76,7 +76,7 @@ export default function Register() {
       }
 
       toast.success(
-        "Account created! Please check your email to verify your account."
+        "Account created! you can now login to start practicing."
       );
       router.push("/login");
     } catch (error: unknown) {
