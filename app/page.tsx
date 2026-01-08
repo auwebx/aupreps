@@ -481,10 +481,10 @@ export default function Home() {
                   <div>
                     <p className="text-sm opacity-90 mb-1">Phone</p>
                     <a
-                      href="tel:+2348012345678"
+                      href="tel:+2349013039060"
                       className="font-medium hover:underline"
                     >
-                      +234 801 234 5678
+                      +2349013039060
                     </a>
                   </div>
                 </div>
