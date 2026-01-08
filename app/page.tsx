@@ -119,7 +119,7 @@ export default function Home() {
         <div className="flex gap-2 sm:gap-4">
           {user ? (
             <>
-              <Link href="/dashboard">
+              <Link href="/dashboard/user">
                 <Button className="bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base px-3 sm:px-4">
                   Dashboard
                 </Button>
@@ -374,18 +374,18 @@ export default function Home() {
             ) : (
               <>
                 <FAQItem
-                  question="What exams does AUWebX Exam cover?"
+                  question="What exams does AUPreps Exam cover?"
                   answer="We cover JAMB UTME, WAEC, NECO, and other major Nigerian examinations. Our platform includes over 50,000 past questions across all subjects including Mathematics, English, Physics, Chemistry, Biology, Economics, and more."
                 />
 
                 <FAQItem
-                  question="How does the 7-day free trial work?"
-                  answer="When you sign up, you get instant access to all Pro features for 7 days absolutely free. No credit card required! After the trial, you can choose to upgrade to a paid plan or continue with our free tier."
+                  question="How does the free trial work?"
+                  answer="When you sign up, you get instant access to all Pro features for some absolutely features free. No credit card required! After the trial, you can choose to upgrade to a paid plan or continue with our free tier."
                 />
 
                 <FAQItem
                   question="Can I use the platform offline?"
-                  answer="Yes! AUWebX Exam is a Progressive Web App (PWA) that works offline. Once you've downloaded questions, you can practice anywhere without internet connection. Your progress syncs automatically when you're back online."
+                  answer="Yes! AUPreps that works offline. Once you've downloaded questions, you can practice anywhere without internet connection. Your progress syncs automatically when you're back online."
                 />
 
                 <FAQItem
@@ -457,13 +457,13 @@ export default function Home() {
                       href="mailto:support@auwebxexam.com"
                       className="font-medium hover:underline"
                     >
-                      support@auwebx.com
+                      support@aupreps.com
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center shrink-0 mr-4">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -490,7 +490,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center shrink-0 mr-4">
                     <svg
                       className="w-5 h-5"
                       fill="currentColor"
@@ -502,12 +502,12 @@ export default function Home() {
                   <div>
                     <p className="text-sm opacity-90 mb-1">WhatsApp</p>
                     <a
-                      href="https://wa.me/2347043619930"
+                      href="https://wa.me/2349013039060"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-medium hover:underline"
                     >
-                      +234 704 361 9930
+                      +234 901 303 9060
                     </a>
                   </div>
                 </div>
@@ -534,7 +534,7 @@ export default function Home() {
         <div className="text-center mt-16">
           <p className="text-gray-700 mb-4 text-lg">Still have questions?</p>
           <Link href="/contact">
-            <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3">
+            <Button className="bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3">
               Contact Support
             </Button>
           </Link>
@@ -726,7 +726,7 @@ export default function Home() {
                 <h5 className="font-semibold mb-3">Follow Us</h5>
                 <div className="flex space-x-4">
                   <a
-                    href="https://facebook.com/auwebxexam"
+                    href="https://facebook.com/aupreps"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-green-700 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
@@ -740,7 +740,7 @@ export default function Home() {
                     </svg>
                   </a>
                   <a
-                    href="https://twitter.com/auwebxexam"
+                    href="https://twitter.com/aupreps"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-green-700 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
@@ -754,7 +754,7 @@ export default function Home() {
                     </svg>
                   </a>
                   <a
-                    href="https://instagram.com/auwebxexam"
+                    href="https://instagram.com/aupreps"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-green-700 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
@@ -768,7 +768,7 @@ export default function Home() {
                     </svg>
                   </a>
                   <a
-                    href="https://wa.me/2348012345678"
+                    href="https://wa.me/2349013039060"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-10 h-10 bg-green-700 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors"
@@ -792,7 +792,7 @@ export default function Home() {
               &copy; {new Date().getFullYear()} AUPreps. All rights reserved.
             </p>
             <p className="mt-2 text-sm">
-              Made with 💚 in Nigeria for Nigerian students
+              Made with 💚 By AUPreps
             </p>
           </div>
         </div>
