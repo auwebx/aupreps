@@ -224,12 +224,12 @@ export default function DashboardLayout({
               </div>
             </div>
             <div className="flex items-center justify-end md:justify-start space-x-4">
-              <div className="text-right md:text-right">
+              {/* <div className="text-right md:text-right">
                 <p className="text-sm text-gray-400">Role</p>
                 <p className="text-white font-semibold capitalize">
                   {userRole}
                 </p>
-              </div>
+              </div> */}
               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-green-400 flex items-center justify-center text-white font-bold text-lg">
                 {user.firstName[0]}
                 {user.lastName[0]}

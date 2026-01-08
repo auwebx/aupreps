@@ -1574,7 +1574,7 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
 
   // Test Setup View
   if (view === "testSetup" && selectedSubject) {
-    const maxQuestions = Math.min(selectedSubject.questionCount, 50);
+    const maxQuestions = Math.min(selectedSubject.questionCount, 60);
     const isQuestionsValid =
       testSetup.numberOfQuestions >= 1 &&
       testSetup.numberOfQuestions <= maxQuestions;
@@ -1633,9 +1633,12 @@ IMPORTANT: Focus on making the explanation EASY TO UNDERSTAND for learners.`;
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
+                  Select between 1 and {maxQuestions} questions 
+                </p>
+              {/*   <p className="text-sm text-gray-500 mt-2">
                   Select between 1 and {maxQuestions} questions (Available:{" "}
                   {selectedSubject.questionCount})
-                </p>
+                </p> */}
               </div>
 
               <div>
